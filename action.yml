@@ -1,0 +1,27 @@
+name: 'LibreCores CI with FuseSoC'
+description: 'FuseSoC action on LibreCores CI'
+inputs:
+  core:
+    description: 'Core identifier'
+    required: true
+    default: ''
+  flow:
+    description: 'Flow to execute (build, run, ...)'
+    required: true
+    default: 'build'
+  target:
+    description: 'Target'
+    required: false
+    default: ''
+  tool:
+    description: 'Tool to use'
+    required: false
+  pre-run-command:
+    description: 'Execute command before the run'
+    required: false
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+branding:
+  icon: 'cpu'
+  color: 'green'
