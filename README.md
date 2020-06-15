@@ -1,26 +1,33 @@
 # LibreCores CI Github Action with FuseSoC
 
-This executes FuseSoC in the [LibreCores CI docker container](https://github.com/librecores/ci-docker-image).
+This executes FuseSoC in the [LibreCores CI docker
+container](https://github.com/librecores/ci-docker-image).
 
-It is still in an early development phase, please feel free to open an issue with your suggestion!
+It is still in an early development phase, please feel free to open an issue
+with your suggestion!
 
 ## Inputs
 
+### `arguments`
+
+Those are the main arguments. It can also be used to run FuseSoC without setting
+any other of the inputs, despite that is discouraged.
+
+### `command`
+
+Command to execute, such as `build`, `run` etc.
+
 ### `core`
 
-**Required** The core/system identifier to execute on.
-
-### `flow`
-
-**Required** Command to execute, such as `build`, `run` etc.
+The core/system identifier to execute on.
 
 ### `target`
 
-*Optional* Override default target, default none.
+Override default target, default none.
 
 ### `tool`
 
-*Optional* Override default tool for target, default none.
+Override default tool for target, default none.
 
 ## Example usage
 

@@ -4,18 +4,18 @@
 name: 'LibreCores CI with FuseSoC'
 description: 'FuseSoC action on LibreCores CI'
 inputs:
+  arguments:
+    description: 'Arguments to the main executable'
+    required: false
   core:
     description: 'Core identifier'
-    required: true
-    default: ''
+    required: false
   flow:
     description: 'Flow to execute (build, run, ...)'
-    required: true
-    default: 'build'
+    required: false
   target:
     description: 'Target'
     required: false
-    default: ''
   tool:
     description: 'Tool to use'
     required: false
