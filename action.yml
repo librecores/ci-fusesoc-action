@@ -1,3 +1,6 @@
+# Copyright 2020, LibreCores CI contributors
+# SPDX-License-Identifier: MIT
+
 name: 'LibreCores CI with FuseSoC'
 description: 'FuseSoC action on LibreCores CI'
 inputs:
