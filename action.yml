@@ -10,8 +10,14 @@ inputs:
   core:
     description: 'Core identifier'
     required: false
-  flow:
-    description: 'Flow to execute (build, run, ...)'
+  core-arguments:
+    description: 'Arguments passed to the core at run'
+    required: false
+  command:
+    description: 'Command to execute (build, run, ...)'
+    required: false
+  command-arguments:
+    description: 'Arguments passed to the command'
     required: false
   target:
     description: 'Target'

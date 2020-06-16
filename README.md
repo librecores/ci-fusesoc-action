@@ -17,9 +17,17 @@ any other of the inputs, despite that is discouraged.
 
 Command to execute, such as `build`, `run` etc.
 
+### `command-arguments`
+
+Arguments to be passed to the command.
+
 ### `core`
 
 The core/system identifier to execute on.
+
+### `core-arguments`
+
+Arguments to be passed to the core.
 
 ### `target`
 
