@@ -13,6 +13,8 @@ def env_get(id):
     return None
   return v
 
+subprocess.call("docker run helloworld", shell=True)
+
 if __name__ == "__main__":
   if env_get("INPUT_PRE-RUN-COMMAND"):
     ret = subprocess.run(env_get("INPUT_PRE-RUN-COMMAND"), shell=True)
