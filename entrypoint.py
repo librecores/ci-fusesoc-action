@@ -5,6 +5,7 @@
 import subprocess
 import sys, os, re
 import tempfile
+from uuid import uuid4
 
 # Handle that envvars are always there, but empty
 def env_get(id):
@@ -21,7 +22,10 @@ if __name__ == "__main__":
 
   _, logfile = tempfile.mkstemp(suffix=".log")
 
-  print(env_get("INPUT_LIBRARIES"))
+  libs = env_get("INPUT_LIBRARIES")
+  if libs:
+    for lib in libs.split(","):
+      subprocess.call(f"fusesoc library add {uuid4()} {lib}", shell=True)
 
   args = ["fusesoc"]
   if env_get("INPUT_ARGUMENTS"):

@@ -13,3 +13,9 @@ jobs:
         uses: ./ # Uses an action in the root directory
         with:
           arguments: --version
+      - name: Libraries
+        uses: ./
+        with:
+          arguments: list-cores
+          libraries: https://github.com/olofk/serv
+
