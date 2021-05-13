@@ -21,16 +21,15 @@ if __name__ == "__main__":
 
   _, logfile = tempfile.mkstemp(suffix=".log")
 
+  print(env_get("INPUT_LIBRARIES"))
+
   args = ["fusesoc"]
   if env_get("INPUT_ARGUMENTS"):
     args += ["--log-file", logfile] + env_get("INPUT_ARGUMENTS").split(" ")
   else:
-    command = env_get("INPUT_COMMAND")
     args += ["--cores-root", "."]
     args += ["--log-file", logfile]
-    args += [command]
-    if command in ["run"]:
-      args += ["--no-export"]
+    args += "run"
     if env_get("INPUT_TARGET"):
       args += ["--target", env_get("INPUT_TARGET")]
     if env_get("INPUT_TOOL"):

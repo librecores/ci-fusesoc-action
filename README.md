@@ -8,16 +8,14 @@ with your suggestion!
 
 ## Inputs
 
+### `libraries`
+
 ### `arguments`
 
 Those are the main arguments. It can also be used to run FuseSoC without setting
 any other of the inputs, despite that is discouraged.
 
-### `command`
-
-Command to execute, such as `build`, `run` etc.
-
-### `command-arguments`
+### `run-arguments`
 
 Arguments to be passed to the command.
 
@@ -40,9 +38,8 @@ Override default tool for target, default none.
 ## Example usage
 
 ```yaml
-uses: librecores/ci-fusesoc-action@2020.6-rc1
+uses: librecores/ci-fusesoc-action@1.0
 with:
   core: myorg:mylib:mycore
-  flow: run
   target: lint
 ```
