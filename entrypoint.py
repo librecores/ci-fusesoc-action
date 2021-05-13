@@ -2,16 +2,17 @@
 # Copyright 2020, LibreCores CI contributors
 # SPDX-License-Identifier: MIT
 
+from fusesoc.main import parse_args, fusesoc
 import subprocess
 import sys, os, re
 import tempfile
 from uuid import uuid4
 
 # Handle that envvars are always there, but empty
-def env_get(id):
+def env_get(id, default=None):
   v = os.getenv(id, default='')
   if v and len(v) == 0:
-    return None
+    return default
   return v
 
 if __name__ == "__main__":
@@ -33,7 +34,7 @@ if __name__ == "__main__":
   else:
     args += ["--cores-root", "."]
     args += ["--log-file", logfile]
-    args += "run"
+    args += ["run"]
     if env_get("INPUT_TARGET"):
       args += ["--target", env_get("INPUT_TARGET")]
     if env_get("INPUT_TOOL"):
