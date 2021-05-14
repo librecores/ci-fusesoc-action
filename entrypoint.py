@@ -2,7 +2,6 @@
 # Copyright 2020, LibreCores CI contributors
 # SPDX-License-Identifier: MIT
 
-from fusesoc.main import parse_args, fusesoc
 import subprocess
 import sys, os, re
 import tempfile
@@ -14,6 +13,10 @@ def env_get(id, default=None):
   if v and len(v) == 0:
     return default
   return v
+
+arguments = {
+  "tool": env_get("INPUT_TOOL")
+}
 
 if __name__ == "__main__":
   if env_get("INPUT_PRE-RUN-COMMAND"):
@@ -44,6 +47,8 @@ if __name__ == "__main__":
     args += [env_get("INPUT_CORE")]
     if env_get("INPUT_CORE-ARGUMENTS"):
       args += env_get("INPUT_CORE-ARGUMENTS").split(" ")
+
+  os.putenv("EDALIZE_LAUNCHER", f"eda-container-wrapper --split-cwd-tail=1 --cwd-base {os.getenv('GITHUB_WORKSPACE')}:/github/workspace --non-interactive {arguments['tool']} --")
 
   ret = subprocess.run(" ".join(args), shell=True, capture_output=True)
   stdout = ret.stdout
