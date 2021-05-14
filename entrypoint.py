@@ -10,7 +10,7 @@ from uuid import uuid4
 
 def get_arguments():
   arguments = {}
-  supported = ["tool", "libraries", "pre-run-command", "arguments", "target", "run-arguments", "core", "core-arguments"]
+  supported = ["tool", "libraries", "pre-run-command", "arguments", "target", "run-arguments", "core", "core-arguments", "path"]
   for arg in supported:
     v = os.getenv(f"INPUT_{arg.upper()}")
     v = None if v and len(v) == 0 else v
@@ -18,6 +18,7 @@ def get_arguments():
 
   # some post-processing
   arguments["libraries"] = arguments["libraries"].split(",") if arguments["libraries"] else []
+  arguments["path"] = arguments["path"] if arguments["path"] else os.getenv("GITHUB_REPOSITORY").split("/")[1]
 
   return arguments
 
@@ -51,7 +52,8 @@ if __name__ == "__main__":
     if arguments["core-arguments"]:
       args += arguments["core-arguments"].split(" ")
 
-  os.putenv("EDALIZE_LAUNCHER", f"eda-container-wrapper --split-cwd-tail=1 --cwd-base {os.getenv('GITHUB_WORKSPACE')}:/github/workspace --non-interactive {arguments['tool']} --")
+  runner_path = os.path.join(os.getenv('RUNNER_WORKSPACE'), arguments["path"])
+  os.putenv("EDALIZE_LAUNCHER", f"eda-container-wrapper --split-cwd-tail=1 --cwd-base {runner_path}:/github/workspace --non-interactive {arguments['tool']} --")
 
   ret = subprocess.run(" ".join(args), shell=True, capture_output=True)
   stdout = ret.stdout

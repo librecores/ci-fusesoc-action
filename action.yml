@@ -28,6 +28,9 @@ inputs:
   pre-run-command:
     description: 'Execute command before the run'
     required: false
+  path:
+    description: 'Checkout path (default: <reponame>, guessed)'
+    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
