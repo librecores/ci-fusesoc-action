@@ -2,11 +2,14 @@
 # Copyright 2020, LibreCores CI contributors
 # SPDX-License-Identifier: MIT
 
-from fusesoc.main import parse_args, fusesoc
 import subprocess
 import sys, os, re
 import tempfile
 from uuid import uuid4
+
+from fusesoc.main import parse_args, fusesoc
+from edacontainerwrapper.main import write_wrapper
+from edacontainerwrapper.arguments import RunArguments
 
 def get_arguments():
   arguments = {}
@@ -47,14 +50,14 @@ if __name__ == "__main__":
       args += ["--target", arguments["target"]]
     if arguments["tool"]:
       args += ["--tool", arguments["tool"]]
+      runner_path = os.path.join(os.getenv('RUNNER_WORKSPACE'), arguments["path"])
+      os.putenv("EDALIZE_LAUNCHER", f"eda-container-wrapper --split-cwd-tail=1 --cwd-base {runner_path}:/github/workspace --non-interactive {arguments['tool']} --")
+      write_wrapper(arguments["tool"], os.path.join("/usr/local/bin/", arguments['tool']), RunArguments(split_cwd_tail=1, cwd_base=f"{runner_path}:/github/workspace", interactive=False, tool_version=None))
     if arguments["run-arguments"]:
       args += arguments["run-arguments"].split(" ")
     args += [arguments["core"]]
     if arguments["core-arguments"]:
       args += arguments["core-arguments"].split(" ")
-
-  runner_path = os.path.join(os.getenv('RUNNER_WORKSPACE'), arguments["path"])
-  os.putenv("EDALIZE_LAUNCHER", f"eda-container-wrapper --split-cwd-tail=1 --cwd-base {runner_path}:/github/workspace --non-interactive {arguments['tool']} --")
 
   ret = subprocess.run(" ".join(args), shell=True, capture_output=True)
   stdout = ret.stdout
@@ -72,7 +75,6 @@ if __name__ == "__main__":
       msg = m.group(6) + "%0A"
       msg += m.group(7).replace('%', '%25').replace('\\n', '%0A').replace('\\r', '%0D').replace("\\'", "\'")
       print("::{} file={},line={},col={}::{}".format(severity, m.group(3), m.group(4), m.group(5), msg))
-
   else:
     print("=== stdout:")
     print(str(stdout))
