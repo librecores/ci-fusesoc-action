@@ -27,6 +27,7 @@ if __name__ == "__main__":
   _, logfile = tempfile.mkstemp(suffix=".log")
 
   libs = env_get("INPUT_LIBRARIES")
+  print(libs)
   if libs:
     for lib in libs.split(","):
       subprocess.call(f"fusesoc library add {uuid4()} {lib}", shell=True)

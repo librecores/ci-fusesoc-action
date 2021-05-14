@@ -1,3 +1,3 @@
 git+https://github.com/olofk/fusesoc
 edalize
-eda-container-wrapper
+git+https://github.com/librecores/eda-container-wrapper
