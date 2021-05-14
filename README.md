@@ -10,6 +10,8 @@ with your suggestion!
 
 ### `libraries`
 
+Comma-separated list of libraries to add.
+
 ### `arguments`
 
 Those are the main arguments. It can also be used to run FuseSoC without setting
@@ -35,10 +37,15 @@ Override default target, default none.
 
 Override default tool for target, default none.
 
+### `path`
+
+Path used by checkout. This is by default guessed from the repo, but if you are
+fancy with the checkout paths, it needs to be set accordingly.
+
 ## Example usage
 
 ```yaml
-uses: librecores/ci-fusesoc-action@1.0
+uses: librecores/ci-fusesoc-action@v1
 with:
   core: myorg:mylib:mycore
   target: lint

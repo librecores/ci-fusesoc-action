@@ -33,7 +33,8 @@ if __name__ == "__main__":
   _, logfile = tempfile.mkstemp(suffix=".log")
 
   for lib in arguments["libraries"]:
-    subprocess.call(f"fusesoc library add {uuid4()} {lib}", shell=True)
+    args = parse_args(["library", "add", str(uuid4()), lib])
+    fusesoc(args)
 
   args = ["fusesoc"]
   if arguments["arguments"]:
