@@ -2,52 +2,54 @@
 # Copyright 2020, LibreCores CI contributors
 # SPDX-License-Identifier: MIT
 
+from fusesoc.main import parse_args, fusesoc
 import subprocess
 import sys, os, re
 import tempfile
 from uuid import uuid4
 
-# Handle that envvars are always there, but empty
-def env_get(id, default=None):
-  v = os.getenv(id, default='')
-  if v and len(v) == 0:
-    return default
-  return v
+def get_arguments():
+  arguments = {}
+  supported = ["tool", "libraries", "pre-run-command", "arguments", "target", "run-arguments", "core", "core-arguments"]
+  for arg in supported:
+    v = os.getenv(f"INPUT_{arg.upper()}")
+    v = None if v and len(v) == 0 else v
+    arguments[arg] = v
 
-arguments = {
-  "tool": env_get("INPUT_TOOL")
-}
+  # some post-processing
+  arguments["libraries"] = arguments["libraries"].split(",") if arguments["libraries"] else []
+
+  return arguments
+
 
 if __name__ == "__main__":
-  if env_get("INPUT_PRE-RUN-COMMAND"):
-    ret = subprocess.run(env_get("INPUT_PRE-RUN-COMMAND"), shell=True)
+  arguments = get_arguments()
+  if arguments["pre-run-command"]:
+    ret = subprocess.run(arguments["pre-run-command"], shell=True)
     if ret.returncode != 0:
       exit(ret.returncode)
 
   _, logfile = tempfile.mkstemp(suffix=".log")
 
-  libs = env_get("INPUT_LIBRARIES")
-  print(libs)
-  if libs:
-    for lib in libs.split(","):
-      subprocess.call(f"fusesoc library add {uuid4()} {lib}", shell=True)
+  for lib in arguments["libraries"]:
+    subprocess.call(f"fusesoc library add {uuid4()} {lib}", shell=True)
 
   args = ["fusesoc"]
-  if env_get("INPUT_ARGUMENTS"):
-    args += ["--log-file", logfile] + env_get("INPUT_ARGUMENTS").split(" ")
+  if arguments["arguments"]:
+    args += ["--log-file", logfile] + arguments["arguments"].split(" ")
   else:
     args += ["--cores-root", "."]
     args += ["--log-file", logfile]
     args += ["run"]
-    if env_get("INPUT_TARGET"):
-      args += ["--target", env_get("INPUT_TARGET")]
-    if env_get("INPUT_TOOL"):
-      args += ["--tool", os.environ.get("INPUT_TOOL")]
-    if env_get("INPUT_COMMAND-ARGUMENTS"):
-      args += env_get("INPUT_COMMAND-ARGUMENTS").split(" ")
-    args += [env_get("INPUT_CORE")]
-    if env_get("INPUT_CORE-ARGUMENTS"):
-      args += env_get("INPUT_CORE-ARGUMENTS").split(" ")
+    if arguments["target"]:
+      args += ["--target", arguments["target"]]
+    if arguments["tool"]:
+      args += ["--tool", arguments["tool"]]
+    if arguments["run-arguments"]:
+      args += arguments["run-arguments"].split(" ")
+    args += [arguments["core"]]
+    if arguments["core-arguments"]:
+      args += arguments["core-arguments"].split(" ")
 
   os.putenv("EDALIZE_LAUNCHER", f"eda-container-wrapper --split-cwd-tail=1 --cwd-base {os.getenv('GITHUB_WORKSPACE')}:/github/workspace --non-interactive {arguments['tool']} --")
 
@@ -60,7 +62,7 @@ if __name__ == "__main__":
   with open(logfile) as f:
     print("".join(f.readlines()))
 
-  if env_get("INPUT_COMMAND") == "run" and env_get("INPUT_TARGET") == "lint" and env_get("INPUT_TOOL") == "verilator":
+  if arguments["target"] == "lint" and arguments["tool"] == "verilator":
     rx = re.compile(r"%((Warning|Error)-\w+: \.\./\.\./\.\./(.*?):(\d+):(\d+): (.*?)\\n\s*:([^%]*))")
     for m in rx.finditer(str(stderr)):
       severity = m.group(2).lower()
